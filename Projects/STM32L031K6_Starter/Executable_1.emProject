@@ -43,6 +43,9 @@
       project_directory=""
       project_type="Executable"
       target_reset_script="Reset();" />
+    <configuration
+      Name="Debug"
+      c_system_include_directories="$(StudioIncDir:$(StudioDir)/include);$(ProjectDir)/../../Lib/inc" />
     <folder Name="CMSIS Files">
       <file file_name="STM32L0xx/Device/Include/stm32l0xx.h" />
       <file file_name="STM32L0xx/Device/Source/system_stm32l0xx.c">
@@ -57,15 +60,14 @@
         <configuration Name="Common" file_type="Reset Script" />
       </file>
     </folder>
-    <folder Name="SEGGER">
-      <file file_name="SEGGER_RTT.c" />
-      <file file_name="SEGGER_RTT.h" />
-      <file file_name="SEGGER_RTT_ASM_ARMv7M.S" />
-      <file file_name="SEGGER_RTT_Conf.h" />
-    </folder>
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <file file_name="../../Lib/src/clock.c" />
+      <file file_name="../../Lib/src/gpio.c" />
       <file file_name="main.c" />
+      <file file_name="../../Lib/src/simpleTimer.c" />
+      <file file_name="../../Lib/src/switch.c" />
+      <file file_name="../../Lib/src/uart.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="SEGGER_THUMB_Startup.s" />
