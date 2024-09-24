@@ -11,7 +11,7 @@
 *.out
 *.obj
 
-*.xml
+#*.xml , #We need to include memory map XML file
 
 # Trash
 *.bak
