@@ -6,7 +6,7 @@
 // FILE: switch.h
 //
 
-#include "stm32l031xx.h"
+#include "stm32g031xx.h"
 
 
 typedef enum SwStateTypedef__

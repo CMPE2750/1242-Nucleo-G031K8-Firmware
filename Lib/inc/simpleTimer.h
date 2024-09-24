@@ -5,7 +5,7 @@
 //
 // FILE: simpleTimer.h
 //
-#include "stm32l031xx.h"
+#include "stm32g031xx.h"
 
 /// @brief Init Timer
 /// @param Timer

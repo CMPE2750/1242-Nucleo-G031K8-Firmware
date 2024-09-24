@@ -1,7 +1,7 @@
 //******************
 //Clock Library
 //
-// CREATED: 10/27/2023, by Carlos Estay
+// CREATED: Sept/24/2024, by Carlos Estay
 //
 // FILE: clock.c
 //
@@ -12,43 +12,41 @@
 #include "gpio.h"
 #include "clock.h"
 
-void Clock_InitMsi(MsiRange msiRange)
-{
-  //Set MSI range
-  RCC->ICSCR &= ~RCC_ICSCR_MSIRANGE_Msk;  //Clear MSI range
-  RCC->ICSCR |= msiRange;                //Set range
-  RCC->CR |=  RCC_CR_MSION;              //Set MSI on
-
-  SystemCoreClockUpdate();  //This is a CMSIS function
-  //https://arm-software.github.io/CMSIS_5/latest/Core/html/group__system__init__gr.html
-}
 
 void Clock_InitPll(PllRange pllRange)
 {
+  
   RCC->CR &= ~RCC_CR_PLLON;             //Disable Pll
   while(RCC->CR  & RCC_CR_PLLRDY);     //Wait until Pll is fully stopped
   /*
-  For Pll Configuration check (7.2.4) in the Reference Manual
-  Also, the Clock Configuration tab in STMCubeMx 
+  For Pll Configuration check (5.2.4) in the Reference Manual
+  Also, the Clock Configuration tab in STMCubeMx.
 
-  - PLLSRC = 0 (HSI16 Clock)  //16MHZ
-  - PLLSRC = 1 (HSE Clock)    //Given by external crystal
-
-  PLL_Out = PLL_IN x PLLMUL / PLLDIV
+  PLL_CLK = PLL_IN x (N / M) / R   
 
 
-  The PLL VCO clock frequency must not exceed 96 MHz when the product is in
-  Range 1, 48 MHz when the product is in Range 2 and 24 MHz when the product is in
-  Range 3. (RM 7.3.3)
+  The following configurations get done in the RCC_PLLCFGR register:
+
+  (1) PLL_IN, depends on PLLSRC BITS[1:0]
+        - PLLSRC = 0 (HSI16 Clock)  //16MHZ
+        - PLLSRC = 1 (HSE Clock)    //Given by external crystal
+      The PLL PLL_CLK frequency must not exceed 64 MHz
+
+  (2) N depends on PLLN BITS[14:8]
+
+  (3) M depends on PLLM BITS[6:4]
+
+  (4) R depends on PLLR BITS[31:29]
 
   */
   RCC->CR |= RCC_CR_HSION_Msk; //Turn ON HSI
-  //Clear multiplier and  didisor
-  RCC->CFGR &= ~(RCC_CFGR_PLLMUL_Msk | RCC_CFGR_PLLDIV_Msk);
-  RCC->CFGR |= pllRange;
+
+
+  RCC->PLLCFGR = pllRange;
 
   RCC->CR |= RCC_CR_PLLON;              //Enable Pll again
   while(!(RCC->CR & RCC_CR_PLLRDY));    //Wait until PLL is locked
+  RCC->CFGR |= RCC_CFGR_SW_Msk;         //Set HSISYS System Clock, clear setting
   RCC->CFGR |= RCC_CFGR_SW_PLL;         //Set Pll as System Clock
 
   SystemCoreClockUpdate();  //This is a CMSIS function

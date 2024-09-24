@@ -8,7 +8,7 @@
 #ifndef UART_H
 #define UART_H
 
-#include "stm32l031xx.h"
+#include "stm32g031xx.h"
 
 
 /// @brief 

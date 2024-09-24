@@ -46,6 +46,7 @@
     <configuration
       Name="Debug"
       arm_stm32cubeprogrammer_directory="C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
+      c_user_include_directories="$(ProjectDir)/../../Lib/inc"
       debug_target_connection="ST-Link" />
     <folder Name="CMSIS Files">
       <file file_name="STM32G0xx/Device/Include/stm32g0xx.h" />
@@ -63,7 +64,12 @@
     </folder>
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <file file_name="../../Lib/src/clock.c" />
+      <file file_name="../../Lib/src/gpio.c" />
       <file file_name="main.c" />
+      <file file_name="../../Lib/src/simpleTimer.c" />
+      <file file_name="../../Lib/src/switch.c" />
+      <file file_name="../../Lib/src/uart.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="SEGGER_THUMB_Startup.s" />

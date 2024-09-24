@@ -5,7 +5,7 @@
 //
 // FILE: gpio.h
 //
-#include "stm32l031xx.h"
+#include "stm32g031xx.h"
 
 #ifndef GPIO_H
 #define GPIO_H

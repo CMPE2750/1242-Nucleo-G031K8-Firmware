@@ -19,18 +19,18 @@ void UART_Init(USART_TypeDef* uart, uint32_t br, char iEn)
 
   if(iEn)
   {//Enable interrupts for receiving
-    uart->CR1 |= USART_CR1_RXNEIE_Msk;
+    uart->CR1 |= USART_CR1_RXNEIE_RXFNEIE_Msk;
   }
   else
   {//Disable interrupts for receiving
-    uart->CR1 &= ~USART_CR1_RXNEIE_Msk;
+    uart->CR1 &= ~USART_CR1_RXNEIE_RXFNEIE_Msk;
   }
-  uart->RQR |= USART_RQR_RXFRQ_Msk;//clear receiving flag, just in case
+  uart->RQR |= USART_RQR_RXFRQ;//clear receiving flag, just in case
 }
 //------------------------------------------------------------------------------
 void UART_TxByte(USART_TypeDef* uart, uint8_t data)
 {
-  while(!(uart->ISR & USART_ISR_TXE));
+  while(!(uart->ISR & USART_ISR_TXE_TXFNF_Msk));
   uart->TDR = data;  
 }
 //------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ void UART_TxBuffer(USART_TypeDef* uart, uint8_t* str)
 //------------------------------------------------------------------------------
 uint8_t UART_RxByte(USART_TypeDef* uart, uint8_t* pData)
 {
-    if(uart->ISR & USART_ISR_RXNE_Msk)
+    if(uart->ISR & USART_ISR_RXNE_RXFNE_Msk)
     {
         *pData = uart->RDR;
         return 1;

@@ -1,47 +1,32 @@
 //******************
 //Clock Library
 //
-// CREATED: 10/27/2023, by Carlos Estay
+// CREATED: Sept/24/2024, by Carlos Estay
 //
 // FILE: clock.h
 //
 //
-#include "stm32l031xx.h"
+#include "stm32g031xx.h"
 
 #ifndef CLOCK_H
 #define CLOCK_H
 
+#define RCC_CFGR_SW_PLL RCC_CFGR_SW_1
 
+/*
+  PLL_CLK = PLL_IN x (N / M) / R 
+  Default R = 2
 
-typedef enum MsiRangeTyepedef__
-{/**/
-    Msi65KHZ = 0 << 13,
-    Msi131KHZ = 1 << 13,
-    Msi262KHZ = 2 << 13,
-    Msi524KHZ = 3 << 13,
-    Msi1_048MHZ = 4 << 13,
-    Msi2_097MHZ = 5 << 13,
-    Msi4_194MHZ = 6 << 13
-}MsiRange;
-  
+*/
 typedef enum PllRangeTypedef__
 {
-
-  /*
-  Formula:
-
-  PLL_Out = PLL_IN x PLLMUL / PLLDIV
-
-  PLL_IN must be in the range of 2MHz - 24MHz.
-
-    - PLLMUL is defaulted to 0(x3)
-    - PLLDIV can be 2 (01), 3(10), or 4(11). 0 is not allowed
-
-  */
-
-    PLL_16MHZ = 1<<RCC_CFGR_PLLMUL_Pos | RCC_CFGR_PLLDIV4_Msk,    // 16MHz x 4 / 4
-    PLL_24MHZ = 0<<RCC_CFGR_PLLMUL_Pos | RCC_CFGR_PLLDIV2_Msk,    // 16MHz x 3 / 2
-    PLL_32MHZ = 1<<RCC_CFGR_PLLMUL_Pos | RCC_CFGR_PLLDIV2_Msk,   // 16MHz x 4 / 2
+    PLL_16MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 4<<RCC_PLLCFGR_PLLN_Pos | 2<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 4 / 2 / 2
+    PLL_20MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 5<<RCC_PLLCFGR_PLLN_Pos | 2<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 5 / 2 /2
+    PLL_24MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 6<<RCC_PLLCFGR_PLLN_Pos | 2<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 6 / 2 / 2
+    PLL_32MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 4<<RCC_PLLCFGR_PLLN_Pos | 1<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 4 / 1 / 2
+    PLL_40MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 5<<RCC_PLLCFGR_PLLN_Pos | 1<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 5 / 1 / 2
+    PLL_48MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 6<<RCC_PLLCFGR_PLLN_Pos | 1<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 6 / 1 / 2
+    PLL_64MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 8<<RCC_PLLCFGR_PLLN_Pos | 1<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 8 / 1 / 2
 
 }PllRange;  
 
@@ -68,7 +53,6 @@ typedef enum MCO_SelectTpedef__
 }MCO_Select;
 
 
-void Clock_InitMsi(MsiRange);
 void Clock_InitPll(PllRange);
 void Clock_EnableOutput(MCO_Select, MCO_Div);
   
