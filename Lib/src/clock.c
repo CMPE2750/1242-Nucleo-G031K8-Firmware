@@ -59,5 +59,4 @@ void Clock_EnableOutput(MCO_Select sel, MCO_Div div)
   //Clear current DIV and source
   RCC->CFGR &= ~(RCC_CFGR_MCOPRE_Msk| RCC_CFGR_MCOSEL_Msk);
   RCC->CFGR |= div | sel;
-  //RCC->CFGR |= sel;
 }
