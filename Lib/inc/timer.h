@@ -23,7 +23,7 @@ typedef enum CCR_Typedef__
 
 typedef enum ChannelMode_Typedef__
 {
-    OutputCompare,
+    OutputCompareToggle,
     InputCapture,
     Pwm1,       //Positive polarity
     Pwm2,       //NegativePolarity
