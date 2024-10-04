@@ -1,5 +1,5 @@
 <!DOCTYPE CrossStudio_Project_File>
-<solution Name="GPIO" version="2" target="8">
+<solution Name="PWM" version="2" target="8">
   <configuration
     Name="Debug"
     c_preprocessor_definitions="DEBUG"
@@ -12,7 +12,7 @@
     gcc_debugging_level="Level 2"
     gcc_omit_frame_pointer="Yes"
     gcc_optimization_level="Level 2 balanced" />
-  <project Name="GPIO">
+  <project Name="PWM">
     <configuration
       LIBRARY_IO_TYPE="RTT"
       Name="Common"
@@ -67,8 +67,6 @@
       <file file_name="../../Lib/src/clock.c" />
       <file file_name="../../Lib/src/gpio.c" />
       <file file_name="main.c" />
-      <file file_name="../../Lib/src/simpleTimer.c" />
-      <file file_name="../../Lib/src/switch.c" />
       <file file_name="../../Lib/src/uart.c" />
     </folder>
     <folder Name="System Files">
