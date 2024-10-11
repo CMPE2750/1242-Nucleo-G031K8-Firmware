@@ -55,6 +55,9 @@ int main(void)
   GPIO_InitAlternateF(GPIOA, 2, 1);
   GPIO_InitAlternateF(GPIOA, 3, 1);
 
+  GPIO_InitAlternateF(GPIOA, 1, 0);
+  GPIO_InitAlternateF(GPIOA, 7, 0);
+
   UART_Init(USART2,115200, 0); //Init USART2 (VCOM) at 115,200 BR
 
   /********************************************************************
@@ -92,6 +95,7 @@ void HAL_Init(void)
   RCC->IOPENR |= RCC_IOPENR_GPIOCEN_Msk;  //Enable Port C
 
   RCC->APBENR1 |= RCC_APBENR1_USART2EN_Msk;     //Enable USART2
+  RCC->APBENR2 |= RCC_APBENR2_SPI1EN_Msk;       //Enable SPI1 (Clock)
 }
 
 
