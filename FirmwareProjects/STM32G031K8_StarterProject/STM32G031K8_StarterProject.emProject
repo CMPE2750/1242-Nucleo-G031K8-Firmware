@@ -45,9 +45,15 @@
       target_reset_script="Reset();" />
     <configuration
       Name="Debug"
-      arm_stm32cubeprogrammer_directory="C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer"
+      arm_architecture="v6M"
+      arm_core_type="Cortex-M0"
+      arm_endian="Little"
+      arm_fpu_type=""
+      arm_stm32cubeprogrammer_directory="$(STM32CUBEPROGDIR)"
+      arm_target_device_name="STM32G031K8"
       c_user_include_directories="$(ProjectDir)/../../Lib/inc"
-      debug_target_connection="ST-Link" />
+      debug_target_connection="ST-Link"
+      linker_section_placements_segments="FLASH1 RX 0x08000000 0x00010000;FLASH2 RX 0x1fff7800 0x00000068;FLASH3 RX 0x1fff7870 0x00000008;RAM1 RWX 0x20000000 0x00002000;" />
     <folder Name="CMSIS Files">
       <file file_name="STM32G0xx/Device/Include/stm32g0xx.h" />
       <file file_name="STM32G0xx/Device/Source/system_stm32g0xx.c">

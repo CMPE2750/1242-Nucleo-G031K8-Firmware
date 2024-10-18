@@ -18,7 +18,6 @@ void ADC_Init(ADC_TypeDef* adc, ADC_Common_TypeDef* adcCommon, ADC_Presc psc, ui
     adc->CR |= ADC_CR_ADDIS;   // Disable it
     while(adc->CR & ADC_CR_ADEN); // Wait until it is disabled
   }
-
   adc->CHSELR = chEn; 
   //Write prescale value
   adcCommon->CCR &= ~ADC_CCR_PRESC_Msk;//clear setting

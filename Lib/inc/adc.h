@@ -8,10 +8,11 @@
 //
 //
 
+
 #ifndef ADC_H
 #define ADC_H
-
 #include "stm32g031xx.h"
+
 
 typedef enum ADC_Presc_Typedef__
 {

@@ -39,10 +39,10 @@ void Clock_InitPll(PllRange pllRange)
   (4) R depends on PLLR BITS[31:29]
 
   */
-  RCC->CR |= RCC_CR_HSION_Msk; //Turn ON HSI
+  //RCC->CR |= RCC_CR_HSION_Msk; //Turn ON HSI
 
 
-  RCC->PLLCFGR = pllRange;
+  RCC->PLLCFGR = pllRange | RCC_PLLCFGR_PLLSRC_HSI; //Add rance and select HSI16 as source
 
   RCC->CR |= RCC_CR_PLLON;              //Enable Pll again
   while(!(RCC->CR & RCC_CR_PLLRDY));    //Wait until PLL is locked
