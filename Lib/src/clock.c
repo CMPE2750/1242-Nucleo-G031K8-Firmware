@@ -12,6 +12,11 @@
 #include "gpio.h"
 #include "clock.h"
 
+/*
+  The HSISYS is used as system clock source after startup from reset, with the division by 1 (producing HSI16 frequency).
+  The HCLK clock and PCLK clock are used for clocking the AHB and the APB domains,
+  respectively. Their maximum allowed frequency is 64MHz. (RM 5.2)
+*/
 
 void Clock_InitPll(PllRange pllRange)
 {
@@ -24,13 +29,13 @@ void Clock_InitPll(PllRange pllRange)
 
   PLL_CLK = PLL_IN x (N / M) / R   
 
+  he PLL PLL_CLK frequency must not exceed 64 MHz
 
   The following configurations get done in the RCC_PLLCFGR register:
 
   (1) PLL_IN, depends on PLLSRC BITS[1:0]
         - PLLSRC = 0 (HSI16 Clock)  //16MHZ
         - PLLSRC = 1 (HSE Clock)    //Given by external crystal
-      The PLL PLL_CLK frequency must not exceed 64 MHz
 
   (2) N depends on PLLN BITS[14:8]
 
@@ -40,13 +45,12 @@ void Clock_InitPll(PllRange pllRange)
 
   */
   //RCC->CR |= RCC_CR_HSION_Msk; //Turn ON HSI
-
-
-  RCC->PLLCFGR = pllRange | RCC_PLLCFGR_PLLSRC_HSI; //Add rance and select HSI16 as source
+  RCC->PLLCFGR = pllRange | RCC_PLLCFGR_PLLSRC_HSI; //Add tange and select HSI16 as source
 
   RCC->CR |= RCC_CR_PLLON;              //Enable Pll again
   while(!(RCC->CR & RCC_CR_PLLRDY));    //Wait until PLL is locked
-  RCC->CFGR |= RCC_CFGR_SW_Msk;         //Set HSISYS System Clock, clear setting
+  //RCC->CFGR &= ~RCC_CFGR_SW_Msk;      //Set HSISYS System Clock, clear setting
+  RCC->PLLCFGR |= RCC_PLLCFGR_PLLPEN | RCC_PLLCFGR_PLLREN;   //Enable PLL/PLLR output
   RCC->CFGR |= RCC_CFGR_SW_PLL;         //Set Pll as System Clock
 
   SystemCoreClockUpdate();  //This is a CMSIS function

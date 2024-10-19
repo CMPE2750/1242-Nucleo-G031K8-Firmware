@@ -45,7 +45,7 @@ int main(void)
   ********************************************************************/  
   
   HAL_Init(); //this is needed when working at higher clock speeds (> 24MHz)
-  //Clock_InitPll(PLL_40MHZ); //Enable Pll to 40MHz
+  Clock_InitPll(PLL_40MHZ); //Enable Pll to 40MHz
   printf("System Clock: %u Hz\n\r", SystemCoreClock); //print system clock result
   Clock_EnableOutput(MCO_Sel_SYSCLK, MCO_Div1); //Enables clock output on PA8 and divides it factor
 

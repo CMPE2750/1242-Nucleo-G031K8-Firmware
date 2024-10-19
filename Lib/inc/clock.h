@@ -15,18 +15,21 @@
 
 /*
   PLL_CLK = PLL_IN x (N / M) / R 
-  Default R = 2
+  Minumum R = 2
 
+  R and M factor must subtract 1 as 0 means setting 1
 */
 typedef enum PllRangeTypedef__
-{
-    PLL_16MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 4<<RCC_PLLCFGR_PLLN_Pos | 2<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 4 / 2 / 2
-    PLL_20MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 5<<RCC_PLLCFGR_PLLN_Pos | 2<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 5 / 2 /2
-    PLL_24MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 6<<RCC_PLLCFGR_PLLN_Pos | 2<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 6 / 2 / 2
-    PLL_32MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 4<<RCC_PLLCFGR_PLLN_Pos | 1<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 4 / 1 / 2
-    PLL_40MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 5<<RCC_PLLCFGR_PLLN_Pos | 1<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 5 / 1 / 2
-    PLL_48MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 6<<RCC_PLLCFGR_PLLN_Pos | 1<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 6 / 1 / 2
-    PLL_64MHZ = 1<<RCC_PLLCFGR_PLLR_Pos | 8<<RCC_PLLCFGR_PLLN_Pos | 1<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 8 / 1 / 2
+{                                                                                             // PLL_IN   N   M   R
+    PLL_16MHZ = (8-1)<<RCC_PLLCFGR_PLLR_Pos |  8<<RCC_PLLCFGR_PLLN_Pos | (1-1)<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x  8 / 1 / 8 = 16MHz
+    PLL_20MHZ = (8-1)<<RCC_PLLCFGR_PLLR_Pos | 10<<RCC_PLLCFGR_PLLN_Pos | (1-1)<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 10 / 1 / 8 = 20MHz
+    PLL_24MHZ = (8-1)<<RCC_PLLCFGR_PLLR_Pos | 12<<RCC_PLLCFGR_PLLN_Pos | (1-1)<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 12 / 1 / 8 = 24MHz
+    PLL_32MHZ = (4-1)<<RCC_PLLCFGR_PLLR_Pos | 8<<RCC_PLLCFGR_PLLN_Pos | (1-1)<<RCC_PLLCFGR_PLLM_Pos,  // 16MHz x  8 / 1 / 4 = 32MHz
+    PLL_40MHZ = (4-1)<<RCC_PLLCFGR_PLLR_Pos | 10<<RCC_PLLCFGR_PLLN_Pos | (1-1)<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 10 / 1 / 2 = 40MHz
+    PLL_48MHZ = (4-1)<<RCC_PLLCFGR_PLLR_Pos | 12<<RCC_PLLCFGR_PLLN_Pos | (1-1)<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 12 / 1 / 4 = 48MHz
+    PLL_50MHZ = (4-1)<<RCC_PLLCFGR_PLLR_Pos | 25<<RCC_PLLCFGR_PLLN_Pos | (2-1)<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 25 / 2 / 4 = 50MHz  
+    PLL_60MHz = (2-1)<<RCC_PLLCFGR_PLLR_Pos | 15<<RCC_PLLCFGR_PLLN_Pos | (2-1)<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 15 / 2 / 2 = 60MHz
+    PLL_64MHZ = (2-1)<<RCC_PLLCFGR_PLLR_Pos | 8 <<RCC_PLLCFGR_PLLN_Pos | (1-1)<<RCC_PLLCFGR_PLLM_Pos, // 16MHz x 8 / 1 / 2 = 64MHz
 
 }PllRange;  
 
