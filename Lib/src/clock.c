@@ -44,12 +44,10 @@ void Clock_InitPll(PllRange pllRange)
   (4) R depends on PLLR BITS[31:29]
 
   */
-  //RCC->CR |= RCC_CR_HSION_Msk; //Turn ON HSI
   RCC->PLLCFGR = pllRange | RCC_PLLCFGR_PLLSRC_HSI; //Add tange and select HSI16 as source
 
   RCC->CR |= RCC_CR_PLLON;              //Enable Pll again
   while(!(RCC->CR & RCC_CR_PLLRDY));    //Wait until PLL is locked
-  //RCC->CFGR &= ~RCC_CFGR_SW_Msk;      //Set HSISYS System Clock, clear setting
   RCC->PLLCFGR |= RCC_PLLCFGR_PLLPEN | RCC_PLLCFGR_PLLREN;   //Enable PLL/PLLR output
   RCC->CFGR |= RCC_CFGR_SW_PLL;         //Set Pll as System Clock
 
