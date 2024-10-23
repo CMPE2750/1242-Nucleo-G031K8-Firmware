@@ -66,6 +66,7 @@
     </folder>
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <file file_name="../../Lib/src/adc.c" />
       <file file_name="../../Lib/src/clock.c" />
       <file file_name="../../Lib/src/gpio.c" />
       <file file_name="main.c" />

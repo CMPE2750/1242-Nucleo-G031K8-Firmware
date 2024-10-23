@@ -57,6 +57,6 @@ void ADC_Init(ADC_TypeDef* adc, ADC_Common_TypeDef* adcCommon, ADC_Presc psc, ui
 void ADC_InterruptEn(ADC_TypeDef* adc, int IRQn);
 uint32_t ADC_Read(ADC_TypeDef* adc);
 void ADC_TriggerConv(ADC_TypeDef* adc);
-uint32_t ADC_BlockingRead(ADC_TypeDef* adc, uint32_t* data);
+uint32_t ADC_BlockingRead(ADC_TypeDef* adc);
 
 #endif /* ADC_H */

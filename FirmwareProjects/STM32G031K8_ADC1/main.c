@@ -3,7 +3,7 @@
 File    : main.c
 Program : Template Project
 Author  : Carlos Estay
-Purpose : 
+Purpose : ADC demo. ADC is configured to 12-bit by default
 Date    : Sept-24-2024
 
 Revision History:
@@ -23,6 +23,7 @@ Revision History:
 #include "clock.h"
 #include "gpio.h"
 #include "uart.h"
+#include "adc.h"
 /*********************************************************************
   Local Prototypes
 *********************************************************************/
@@ -33,13 +34,13 @@ void HAL_Init(void);
 *********************************************************************/
 
 volatile uint16_t msCounter = 0;
-volatile uint8_t beacon = 0;
+volatile uint8_t beacon = 0, convTrigger = 0;
 /*********************************************************************
   Main entry
 *********************************************************************/
 int main(void) 
-
- {
+{
+  uint16_t adcRead;
   /********************************************************************
     One-time Initializations
   ********************************************************************/  
@@ -51,18 +52,10 @@ int main(void)
 
 
   /*
-  Enable LEDS 
-  RED->PB4(CN3_15), YELLOW->PB5(CN3_14), GREEN->PB9(CN3_13)
+  Use PB9 for testing
   */
-  GPIO_InitOutput(GPIOB, 4);
-  GPIO_InitOutput(GPIOB, 5);
   GPIO_InitOutput(GPIOB, 9);
 
-  /*
-  Enable switches
-   CTR->PA0(12)
-  */
-  GPIO_InitInput(GPIOA, 0);
 
   //Enable built in LED (PC6)
   GPIO_InitOutput(GPIOC, 6);
@@ -73,23 +66,29 @@ int main(void)
   GPIO_InitAlternateF(GPIOA, 3, 1);
   UART_Init(USART2,115200, 0); //Init USART2 (VCOM) at 115,200 BR
 
+  /*ADC settings*/
+  ADC_Init(ADC1, ADC1_COMMON, ADC_Presc_10, ADC_Channel_0);
+
+
   /********************************************************************
     Infinite Loop
   ********************************************************************/
   while(1)
   {
+    if(convTrigger)
+    {
+      GPIO_Set(GPIOB, 9);//test PIN
+      ADC_TriggerConv(ADC1);
+      adcRead = ADC_Read(ADC1);
+      convTrigger = 0;
+      GPIO_Clear(GPIOB, 9);//test PIN
+    }
     if(beacon)
     {
       beacon = 0;
       UART_TxStr(USART2,"Hello Program...\n\r");
-    }
-    if(GPIO_Read(GPIOA, 0))
-    {//If CTR is pressed
-      GPIO_Set(GPIOB, 5); //Turn ON YELLOW LED
-    }
-    else
-    {
-      GPIO_Clear(GPIOB, 5); //Turn OFF YELLOW LED
+      printf("Hello Program...\n\r"); //Send same to debug console
+      printf("AN0: %u\n\r", adcRead); //Send same to debug console
     }
   }
 }
@@ -116,6 +115,9 @@ void HAL_Init(void)
   RCC->IOPENR |= RCC_IOPENR_GPIOCEN_Msk;  //Enable Port C
 
   RCC->APBENR1 |= RCC_APBENR1_USART2EN_Msk;     //Enable USART2
+
+  RCC->APBENR2 |= RCC_APBENR2_ADCEN;  //Enable ADC1
+
 }
 
 
@@ -124,19 +126,13 @@ void HAL_Init(void)
 */
 void SysTick_Handler(void)
 {
+  
+  convTrigger = 1;
   if(++msCounter > 499)
   {
     GPIO_Toggle(GPIOC, 6);
-    //GPIO_Toggle(GPIOB, 5);//Toggle GREEN LED
+    
     msCounter = 0;
     beacon = 1;   
-  }
-  if(msCounter % 125 == 0)
-  {
-    GPIO_Toggle(GPIOB, 4); //Toggle RED LED
-  }
-  if(msCounter % 250 == 0)
-  {
-    GPIO_Toggle(GPIOB, 9);//Toggle GREEN LED
   }
 }
