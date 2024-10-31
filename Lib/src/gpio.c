@@ -51,7 +51,7 @@ void GPIO_InitAlternateF(GPIO_TypeDef* port, uint16_t bit, uint16_t function)
 {
     port->MODER &= ~(0b11 <<(2*bit)); //Clear moder
     port->MODER |= (0b10 << (2*bit)); //Configure as Alternate Function
-    if(bit < 7)
+    if(bit < 8)
     {
       GPIOA->AFR[0] &= ~(0xF << (bit*4));     //Clear AF setting
       GPIOA->AFR[0] |= function << (bit*4);   //Write AF

@@ -1,13 +1,13 @@
 //******************
-//PWM Library
+//Timer / PWM Library
 //
 // CREATED: 10/04/2024, by Carlos Estay
 //
-// FILE: pwm.h
+// FILE: timer.h
 //
 
-#ifndef PWM_H
-#define PWM_H
+#ifndef TIMER_H
+#define TIMER_H
 
 #include "stm32g031xx.h"
 
@@ -40,4 +40,4 @@ void Timer_WriteCCR(TIM_TypeDef * timer, CCR_Typedef ccr, uint32_t ccrTicks);
 void Timer_SetEnable(TIM_TypeDef * timer, uint16_t en);
 
 
-#endif /* UART_H */
+#endif /* TIMER_H */
