@@ -55,16 +55,6 @@ int main(void)
   Clock_EnableOutput(MCO_Sel_SYSCLK, MCO_Div1); //Enables clock output on PA8 and divides it factor
 
 
-  /*
-  Use PB9 for testing ADC time
-  */
-  GPIO_InitOutput(GPIOB, 9);
-
-  /*
-  Uee PB4 to test timer manually toggling a PIN
-  */
-  GPIO_InitOutput(GPIOB, 4);
-
   //Enable built in LED (PC6)
   GPIO_InitOutput(GPIOC, 6);
   SysTick_Config(SystemCoreClock / 1000); //Make SysTick to Tick at 1[ms] and call SysTick_Handler()
@@ -74,15 +64,22 @@ int main(void)
   GPIO_InitAlternateF(GPIOA, 3, 1);
   UART_Init(USART2,115200, 0); //Init USART2 (VCOM) at 115,200 BR
 
-  /*ADC settings*/
-  ADC_Init(ADC1, ADC1_COMMON, ADC_Presc_10, ADC_Channel_0);
 
+  /*
+    PWM settings
+    -PWM generation on TIM17->CH1
+    -  Have to setup alternate function: PA7->AF5 (CN4->PIN 5)
+  */
+  GPIO_InitAlternateF(GPIOA, 7, 5);
 
   //Timer setting - run at 1MHz - Reload at 100 (100[us])
   Timer_Setup(TIM17, 40, 100-1);
-  //Enable counter overflow interrupt only (very simple approach)
-  Timer_EnableInterrupt(TIM17, TIM17_IRQn, TimUIE);
+  //PWM mode 1 on Timwe17, Channel 1
+  Timer_SetupChannel(TIM17, TimCCR1, OutputCompareToggle);
+  //Set duty to 25 ticks (25[us])
+  Timer_WriteCCR(TIM17, TimCCR1, 25);
   Timer_SetEnable(TIM17, 1); //Start timer
+
 
   /********************************************************************
     Infinite Loop
@@ -99,7 +96,6 @@ int main(void)
       beacon = 0;
       UART_TxStr(USART2,"Hello Program...\n\r");
       printf("Hello Program...\n\r"); //Send same to debug console
-      printf("AN0: %u\n\r", adcRead); //Send same to debug console
     }
   }
 }
@@ -152,25 +148,3 @@ void SysTick_Handler(void)
  
 /****************Interrupt Service Routines (ISR's)***********************/
 
-/*
-  - This Handler includes all ISR's for TIM17
-  - To handle a specific ISR, mask the proper flag
-  - NVIC_ClearPendingIRQ must be called always, aside 
-    from clearing the FLAG bit to clear the ISR completely
-*/
-void TIM17_IRQHandler(void)
-{
-  
-  if(TIM17->SR & TIM_SR_UIF)
-  {//Counter overflow flag called the ISR
-    TIM17->SR &= ~TIM_SR_UIF; //clear overflow flag
-    NVIC_ClearPendingIRQ(TIM17_IRQn);
-    GPIO_Toggle(GPIOB,4);
-    GPIO_Set(GPIOB, 9);//ADC conversion test PIN
-    /*We have to be careful here as this ISR is being called every 100[us]*/
-    ADC_TriggerConv(ADC1); //The conversion of 1 channel is taking around 5[us] with ADC @4MHz 
-    adcRead = ADC_Read(ADC1);
-    convTrigger = 0;
-    GPIO_Clear(GPIOB, 9);//ADC conversion test PIN1`    
-  }
-}

@@ -1,5 +1,5 @@
 <!DOCTYPE CrossStudio_Project_File>
-<solution Name="STM32G031K8_ADC2-Timer" version="2" target="8">
+<solution Name="STM32G031K8_PWM_Demo1" version="2" target="8">
   <configuration
     Name="Debug"
     c_preprocessor_definitions="DEBUG"
@@ -12,7 +12,7 @@
     gcc_debugging_level="Level 2"
     gcc_omit_frame_pointer="Yes"
     gcc_optimization_level="Level 2 balanced" />
-  <project Name="ADC2-Timer">
+  <project Name="PWM_Demo1">
     <configuration
       LIBRARY_IO_TYPE="RTT"
       Name="Common"
