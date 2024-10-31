@@ -70,12 +70,12 @@ int main(void)
   /*
     PWM settings
     -PWM generation on TIM17->CH1
-    -  Have to setup alternate function: PA7->AF5 (CN4->PIN 5)
+    -Have to setup alternate function: PA7->AF5 (CN4->PIN 5)
   */
   GPIO_InitAlternateF(GPIOA, 7, 5);
 
-  //Timer setting - run at 1MHz - Reload at 100 (100[us])
-  Timer_Setup(TIM17, 40, 100-1);
+  //Timer setting - Run at 1MHz - Reload at 100 (100[us])
+  Timer_Setup(TIM17, 40, 100);
   //PWM mode 1 on Timwe17, Channel 1
   Timer_SetupChannel(TIM17, TimCCR1, Pwm1);
   Timer_WriteCCR(TIM17, TimCCR1, duty);//Set duty

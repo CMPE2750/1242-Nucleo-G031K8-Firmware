@@ -11,7 +11,7 @@ void Timer_Setup(TIM_TypeDef * timer, uint16_t psc, uint16_t period)
 {
     timer->CR1 &= ~TIM_CR1_CEN;              //Stop Timer
     timer->PSC = psc-1;                      //Set prescale
-    timer->ARR = period;
+    timer->ARR = period-1;
 }
 
 void Timer_SetupChannel(TIM_TypeDef * timer, CCR_Typedef ccr, ChannelMode_Typedef chMode)

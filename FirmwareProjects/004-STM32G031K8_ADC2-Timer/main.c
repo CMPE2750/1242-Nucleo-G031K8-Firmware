@@ -79,7 +79,7 @@ int main(void)
 
 
   //Timer setting - run at 1MHz - Reload at 100 (100[us])
-  Timer_Setup(TIM17, 40, 100-1);
+  Timer_Setup(TIM17, 40, 100);
   //Enable counter overflow interrupt only (very simple approach)
   Timer_EnableInterrupt(TIM17, TIM17_IRQn, TimUIE);
   Timer_SetEnable(TIM17, 1); //Start timer
