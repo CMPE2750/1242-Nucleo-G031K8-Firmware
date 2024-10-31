@@ -38,12 +38,13 @@ void HAL_Init(void);
 
 volatile uint16_t msCounter = 0;
 volatile uint8_t beacon = 0, convTrigger = 0;
+volatile uint16_t adcRead;
 /*********************************************************************
   Main entry
 *********************************************************************/
 int main(void) 
 {
-  uint16_t adcRead;
+
   /********************************************************************
     One-time Initializations
   ********************************************************************/  
@@ -60,7 +61,7 @@ int main(void)
   GPIO_InitOutput(GPIOB, 9);
 
   /*
-  Uee PB4 to test timer
+  Uee PB4 to test timer manually toggling a PIN
   */
   GPIO_InitOutput(GPIOB, 4);
 
@@ -79,13 +80,20 @@ int main(void)
 
   //Timer setting - run at 1MHz - Reload at 100 (100[us])
   Timer_Setup(TIM17, 40, 100-1);
+  //Enable counter overflow interrupt only (very simple approach)
+  Timer_EnableInterrupt(TIM17, TIM17_IRQn, TimUIE);
+  Timer_SetEnable(TIM17, 1); //Start timer
+
+
+  /*
   //Set TIM17 CH1 to output compare mode with toggle
   Timer_SetupChannel(TIM17, TimCCR1, OutputCompareToggle);
   //Set PA7 (CN4 PIN5) to Alternate function 5-> TIM17 CH1
   GPIO_InitAlternateF(GPIOA, 7, 5);
   //Toggle at 25 out of 100
   Timer_WriteCCR(TIM17, TimCCR1, 25); 
-  Timer_SetEnable(TIM17, 1); //Start timer
+  */
+
 
 
   //Enable Interrupt for CCR1
@@ -99,11 +107,8 @@ int main(void)
   {
     if(convTrigger)
     {
-      GPIO_Set(GPIOB, 9);//test PIN
-      ADC_TriggerConv(ADC1);
-      adcRead = ADC_Read(ADC1);
       convTrigger = 0;
-      GPIO_Clear(GPIOB, 9);//test PIN
+      //No longer triggering the conversion here
     }
     if(beacon)
     {
@@ -146,7 +151,8 @@ void HAL_Init(void)
 
 
 /*  This event Handler gets called every 1[ms] according to Systick Configuration
-    This is technically not an ISR, therefore it requires no flag clearing
+    This is technically not an ISR (it's an exception), therefore 
+    it requires no flag clearing.
 */
 void SysTick_Handler(void)
 {
@@ -160,19 +166,27 @@ void SysTick_Handler(void)
   }
 }
  
-/*Interrupt Service Routines (ISR's)*/
+/****************Interrupt Service Routines (ISR's)***********************/
+
+/*
+  - This Handler includes all ISR's for TIM17
+  - To handle a specific ISR, mask the proper flag
+  - NVIC_ClearPendingIRQ must be called always, aside 
+    from clearing the FLAG bit to clear the ISR completely
+*/
 void TIM17_IRQHandler(void)
 {
+  
   if(TIM17->SR & TIM_SR_UIF)
-  {
+  {//Counter overflow flag called the ISR
     TIM17->SR &= ~TIM_SR_UIF; //clear overflow flag
-    GPIO_Clear(GPIOB,4);
+    NVIC_ClearPendingIRQ(TIM17_IRQn);
+    GPIO_Toggle(GPIOB,4);
+    GPIO_Set(GPIOB, 9);//ADC conversion test PIN
+    /*We have to be careful here as this ISR is being called every 100[us]*/
+    ADC_TriggerConv(ADC1); //The conversion of 1 channel is taking around 5[us] with ADC @4MHz 
+    adcRead = ADC_Read(ADC1);
+    convTrigger = 0;
+    GPIO_Clear(GPIOB, 9);//ADC conversion test PIN1`    
   }
-  if(TIM17->SR & TIM_SR_CC1IF) 
-  {
-    TIM17->SR &= ~TIM_SR_CC1IF; //clear CCR1 flag
-    GPIO_Set(GPIOB,4);
-  }
-  NVIC_ClearPendingIRQ(TIM17_IRQn);
-  //GPIO_Toggle(GPIOB,4); //Manually toggle PB4
 }

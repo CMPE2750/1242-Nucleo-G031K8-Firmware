@@ -121,6 +121,13 @@ void Timer_WriteCCR(TIM_TypeDef * timer, CCR_Typedef ccr, uint32_t ccrTicks)
     *(&timer->CCR1 + ccr) = ccrTicks;
 }
 
+
+void Timer_EnableInterrupt(TIM_TypeDef * timer, IRQn_Type timerIRQn, Timer_IE interruptMask)
+{
+    timer->DIER |= interruptMask;
+    NVIC_EnableIRQ(timerIRQn);
+}
+
 void Timer_SetEnable(TIM_TypeDef * timer, uint16_t en)
 {
     if(en)
