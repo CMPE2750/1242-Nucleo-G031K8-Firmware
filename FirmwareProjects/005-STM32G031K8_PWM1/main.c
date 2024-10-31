@@ -3,7 +3,10 @@
 File    : main.c
 Program : Template Project
 Author  : Carlos Estay
-Purpose : ADC demo. ADC is configured to 12-bit by default. Triggered by Timer ISR
+Purpose : PWM1 Demo. Variable Duty cycle on An7 (TIM17->CH1, CN4 PIN5)
+          - Timer set to 1MHz-> 1[us] Ticks
+          - Period set to 100 ticks -> 100[us]->10KHz PWM frequency
+          - Duty variable between 1 and 99
 Date    : Sept-24-2024
 
 Revision History:
@@ -37,14 +40,13 @@ void HAL_Init(void);
 *********************************************************************/
 
 volatile uint16_t msCounter = 0;
-volatile uint8_t beacon = 0, convTrigger = 0;
-volatile uint16_t adcRead;
+volatile uint8_t beacon = 0, dutyUpdate = 0;
 /*********************************************************************
   Main entry
 *********************************************************************/
 int main(void) 
 {
-
+  uint16_t duty = 25;
   /********************************************************************
     One-time Initializations
   ********************************************************************/  
@@ -75,10 +77,11 @@ int main(void)
   //Timer setting - run at 1MHz - Reload at 100 (100[us])
   Timer_Setup(TIM17, 40, 100-1);
   //PWM mode 1 on Timwe17, Channel 1
-  Timer_SetupChannel(TIM17, TimCCR1, OutputCompareToggle);
-  //Set duty to 25 ticks (25[us])
-  Timer_WriteCCR(TIM17, TimCCR1, 25);
+  Timer_SetupChannel(TIM17, TimCCR1, Pwm1);
+  Timer_WriteCCR(TIM17, TimCCR1, duty);//Set duty
   Timer_SetEnable(TIM17, 1); //Start timer
+
+  
 
 
   /********************************************************************
@@ -86,10 +89,15 @@ int main(void)
   ********************************************************************/
   while(1)
   {
-    if(convTrigger)
+    if(dutyUpdate)
     {
-      convTrigger = 0;
-      //No longer triggering the conversion here
+      dutyUpdate = 0;
+      //change duty cycle here
+      if(++duty > 99)
+      {
+        duty = 1;
+      }
+      Timer_WriteCCR(TIM17, TimCCR1, duty);
     }
     if(beacon)
     {
@@ -136,7 +144,10 @@ void HAL_Init(void)
 */
 void SysTick_Handler(void)
 {
-  convTrigger = 1;
+  if(msCounter%25 == 0)
+  {//update duty every 25[ms]
+    dutyUpdate = 1;
+  }
   if(++msCounter > 499)
   {
     GPIO_Toggle(GPIOC, 6);

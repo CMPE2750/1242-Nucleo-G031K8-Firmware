@@ -114,6 +114,10 @@ void Timer_SetupChannel(TIM_TypeDef * timer, CCR_Typedef ccr, ChannelMode_Typede
     default:
         break;
     }
+    if(chMode != InputCapture)
+    {
+        timer->BDTR |= TIM_BDTR_MOE; //enable master output (for OC and PWM)
+    }
 }
 
 void Timer_WriteCCR(TIM_TypeDef * timer, CCR_Typedef ccr, uint32_t ccrTicks)
