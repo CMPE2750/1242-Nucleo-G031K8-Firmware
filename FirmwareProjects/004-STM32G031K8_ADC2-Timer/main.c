@@ -153,10 +153,10 @@ void SysTick_Handler(void)
 /****************Interrupt Service Routines (ISR's)***********************/
 
 /*
-  - This Handler includes all ISR's for TIM17
-  - To handle a specific ISR, mask the proper flag
+  - This Handler includes all interrupts for TIM17
+  - To handle a specific interrupt, mask the proper flag
   - NVIC_ClearPendingIRQ must be called always, aside 
-    from clearing the FLAG bit to clear the ISR completely
+    from clearing the flag bit, to service the interrupt completely
 */
 void TIM17_IRQHandler(void)
 {
