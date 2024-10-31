@@ -3,7 +3,7 @@
 //
 // CREATED: 10/04/2024, by Carlos Estay
 //
-// FILE: pwm.c
+// FILE: timer.c
 //
 #include "timer.h"
 
