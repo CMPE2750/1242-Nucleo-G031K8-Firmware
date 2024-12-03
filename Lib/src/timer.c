@@ -143,3 +143,22 @@ void Timer_SetEnable(TIM_TypeDef * timer, uint16_t en)
         timer->CR1 &= ~TIM_CR1_CEN; 
     }
 }
+
+void Timer_SetDelay_us(TIM_TypeDef * timer)
+{
+    uint16_t psc = SystemCoreClock / 1000000;
+    Timer_Setup(timer, psc, 0xFFFF);
+    timer->DIER &= ~TIM_DIER_UIE_Msk;   //Disable update interrupt
+    timer->CR1 |= TIM_CR1_URS_Msk; //Only counter overflow generates Update event
+}
+
+void Timer_Delay_us(TIM_TypeDef * timer, uint16_t us)
+{
+    timer->CR1 &= ~TIM_CR1_CEN;             //Disable counter
+    timer->ARR = us;
+    timer->EGR |= TIM_EGR_UG;       //Restart counter
+    timer->SR &= ~TIM_SR_UIF;     //clear flag
+    timer->CR1 |= TIM_CR1_CEN;      //Start timer
+    while(!(timer->SR & TIM_SR_UIF));
+    
+}

@@ -71,4 +71,8 @@ void Timer_EnableInterrupt(TIM_TypeDef * timer, IRQn_Type timerIRQn, Timer_IE in
 void Timer_SetEnable(TIM_TypeDef * timer, uint16_t en);
 
 
+void Timer_SetDelay_us(TIM_TypeDef * timer);
+
+void Timer_Delay_us(TIM_TypeDef * timer, uint16_t us);
+
 #endif /* TIMER_H */
