@@ -106,7 +106,7 @@ void SysTick_Handler(void)
 {
   
   GPIO_Toggle(GPIOB, 5);
-  if(++msCounter > 499)
+  if(++msCounter > 249)
   {
     GPIO_Toggle(GPIOC, 6);
     msCounter = 0;
