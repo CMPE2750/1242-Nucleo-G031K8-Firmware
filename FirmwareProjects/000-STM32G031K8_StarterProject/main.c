@@ -69,6 +69,7 @@ int main(void)
     {
       beacon = 0;
       UART_TxStr(USART2,"Hello Program...\n\r");
+      printf("Hello Console...\n\r");
     }
   }
 }
@@ -106,7 +107,7 @@ void SysTick_Handler(void)
 {
   
   GPIO_Toggle(GPIOB, 5);
-  if(++msCounter > 249)
+  if(++msCounter > 99)
   {
     GPIO_Toggle(GPIOC, 6);
     msCounter = 0;
