@@ -2188,24 +2188,27 @@
         </file>
     </group>
     <group>
+        <name>Src</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\Lib\src\clock.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\Lib\src\gpio.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\Lib\src\switch.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\Lib\src\uart.c</name>
+        </file>
+    </group>
+    <group>
         <name>System</name>
         <file>
             <name>$PROJ_DIR$\startup_stm32g031xx.s</name>
         </file>
     </group>
     <file>
-        <name>$PROJ_DIR$\..\..\..\Lib\src\clock.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\..\..\..\Lib\src\gpio.c</name>
-    </file>
-    <file>
         <name>$PROJ_DIR$\main.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\..\..\..\Lib\src\switch.c</name>
-    </file>
-    <file>
-        <name>$PROJ_DIR$\..\..\..\Lib\src\uart.c</name>
     </file>
 </project>
