@@ -1000,7 +1000,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>000-STM32G031K8_StarterProject_import_lib.o</state>
+                    <state>001-GPIO1_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
