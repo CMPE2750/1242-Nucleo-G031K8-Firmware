@@ -49,6 +49,7 @@
       arm_stm32cubeprogrammer_directory="$(STM32CUBEPROGDIR)"
       c_user_include_directories="$(ProjectDir)/../../Lib/inc"
       debug_target_connection="ST-Link"
+      gcc_c_language_standard="c17"
       linker_output_format="bin" />
     <folder Name="CMSIS Files">
       <file file_name="STM32G0xx/Device/Include/stm32g0xx.h" />

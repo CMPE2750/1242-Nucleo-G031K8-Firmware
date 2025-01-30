@@ -47,7 +47,7 @@ volatile uint8_t beacon = 0;
 *********************************************************************/
 int main(void) 
 {
-  uint8_t data[] = {0x14, 0x15};
+  uint8_t data[] = {0x3F, 0xFF};
   /********************************************************************
     One-time Initializations
   ********************************************************************/  
@@ -60,34 +60,32 @@ int main(void)
   GPIO_InitOutput(GPIOC, 6);  //built in led
   SysTick_Config(SystemCoreClock / 1000); //Make SysTick to Tick at 1[ms] and call SysTick_Handler()
   
+  /*****I2C INitialization*****/
+
   /*I2C low level configuration*/
   GPIO_InitAlternateF(GPIOA, 9, 6); //SCL
-  GPIO_SetIO(GPIOA, 9, IO_PullUp);
-  GPIO_InitAlternateF(GPIOA, 10, 6); //SSDA
-  GPIO_SetIO(GPIOA, 10, IO_PullUp);
-  //GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED10_1;
+  GPIO_I2C_Config(GPIOA, 9);
+  GPIO_InitAlternateF(GPIOA, 10, 6); //SDA
+  GPIO_I2C_Config(GPIOA, 10);
+  
+  /*Init I2C Module*/
   I2C_Init(I2C1, I2C_Fast);
 
+  /*****USART2 INitialization*****/
   GPIO_InitAlternateF(GPIOA, 2, 1);
   GPIO_InitAlternateF(GPIOA, 3, 1);
   UART_Init(USART2, 115200, 0);
-
-  Delay_ms(100);
-  //SSD1306_Init();
-
 
   /********************************************************************
     Infinite Loop
   ********************************************************************/
   while(1)
   {
-    Delay_ms(499);
-    GPIO_Toggle(GPIOC, 6);
     if(beacon)
     {
       beacon = 0;
-      //I2C_Transmit(I2C1, 0x27,data, 2);
-      UART_TxStr(USART2, "Hello Program\r\n");
+      GPIO_Toggle(GPIOC, 6);
+      I2C_Transmit(I2C1, 0x61,data, 2);
     }
   }
 }
