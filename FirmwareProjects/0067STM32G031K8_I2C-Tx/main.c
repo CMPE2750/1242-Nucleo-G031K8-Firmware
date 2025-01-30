@@ -60,11 +60,11 @@ int main(void)
   SysTick_Config(SystemCoreClock / 1000); //Make SysTick to Tick at 1[ms] and call SysTick_Handler()
   
   /*I2C low level configuration*/
-  GPIO_InitAlternateF(GPIOB, 8, 6);
+  GPIO_InitAlternateF(GPIOA, 9, 6); //SCL
   GPIO_SetIO(GPIOB, 8, IO_PullUp);
-  GPIO_InitAlternateF(GPIOB, 9, 6);
-  GPIO_SetIO(GPIOB, 9, IO_PullUp);
-  GPIOB->OSPEEDR |= GPIO_OSPEEDR_OSPEED9_1;
+  GPIO_InitAlternateF(GPIOA, 10, 6); //SSDA
+  GPIO_SetIO(GPIOA, 10, IO_PullUp);
+  GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED10_1;
   I2C_Init(I2C1, I2C_Fast);
 
   GPIO_InitAlternateF(GPIOA, 2, 1);
