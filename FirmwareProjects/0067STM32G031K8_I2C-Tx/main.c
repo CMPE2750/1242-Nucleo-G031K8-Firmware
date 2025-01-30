@@ -26,18 +26,20 @@ Revision History:
 #include "adc.h"
 #include "timer.h"
 #include "i2c.h"
+#include "ssd1306.h"
 
 
 /*********************************************************************
   Local Prototypes
 *********************************************************************/
 void HAL_Init(void);
+void Delay_ms(uint16_t ms);
 
 /*********************************************************************
   Global variables 
 *********************************************************************/
 
-volatile uint16_t msCounter = 0;
+volatile uint16_t msCounter = 0, delayCounter = 0;
 volatile uint8_t beacon = 0;
 
 
@@ -61,15 +63,18 @@ int main(void)
   
   /*I2C low level configuration*/
   GPIO_InitAlternateF(GPIOA, 9, 6); //SCL
-  GPIO_SetIO(GPIOB, 8, IO_PullUp);
+  GPIO_SetIO(GPIOA, 9, IO_PullUp);
   GPIO_InitAlternateF(GPIOA, 10, 6); //SSDA
   GPIO_SetIO(GPIOA, 10, IO_PullUp);
-  GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED10_1;
+  //GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED10_1;
   I2C_Init(I2C1, I2C_Fast);
 
   GPIO_InitAlternateF(GPIOA, 2, 1);
   GPIO_InitAlternateF(GPIOA, 3, 1);
   UART_Init(USART2, 115200, 0);
+
+  Delay_ms(100);
+  SSD1306_Init();
 
 
   /********************************************************************
@@ -77,10 +82,12 @@ int main(void)
   ********************************************************************/
   while(1)
   {
+    Delay_ms(499);
+    GPIO_Toggle(GPIOC, 6);
     if(beacon)
     {
       beacon = 0;
-      I2C_Transmit(I2C1, 0x27,data, 2);
+      //I2C_Transmit(I2C1, 0x27,data, 2);
       UART_TxStr(USART2, "Hello Program\r\n");
     }
   }
@@ -113,8 +120,11 @@ void HAL_Init(void)
   RCC->CCIPR &= ~RCC_CCIPR_I2C1SEL_Msk; //Clear Independe clock setting
   RCC->CCIPR |= RCC_CCIPR_I2C1SEL_1;    //Set independent clock to HSI16
 
-
-
+}
+void Delay_ms(uint16_t ms)
+{
+  delayCounter = ms;
+  while(delayCounter);
 }
 
 
@@ -124,9 +134,13 @@ void HAL_Init(void)
 */
 void SysTick_Handler(void)
 {
+  if(delayCounter)
+  {
+    --delayCounter;
+  }
   if(++msCounter > 99)
   {
-    GPIO_Toggle(GPIOC, 6);
+    //GPIO_Toggle(GPIOC, 6);
     msCounter = 0;
     beacon = 1;   
   }

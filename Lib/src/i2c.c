@@ -25,7 +25,7 @@ void I2C_Reset(I2C_TypeDef* i2c)
   i2c->CR1 &=  ~I2C_CR1_PE;
 }
 //---------------------------------------------------------------
-int I2C_Transmit(I2C_TypeDef* i2c, uint16_t addr, uint8_t* pData, uint8_t size)
+int I2C_Transmit(I2C_TypeDef* i2c, uint8_t addr, uint8_t* pData, uint8_t size)
 {
   while(I2C_IsBusy(i2c));   //Wait until I2C is not busy
 

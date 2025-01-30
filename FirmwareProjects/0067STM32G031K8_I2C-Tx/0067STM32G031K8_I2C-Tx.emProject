@@ -71,6 +71,7 @@
       <file file_name="../../Lib/src/gpio.c" />
       <file file_name="../../Lib/src/i2c.c" />
       <file file_name="main.c" />
+      <file file_name="../../Lib/src/ssd1306.c" />
       <file file_name="../../Lib/src/timer.c" />
       <file file_name="../../Lib/src/uart.c" />
     </folder>
