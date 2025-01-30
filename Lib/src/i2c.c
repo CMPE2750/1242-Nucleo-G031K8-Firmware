@@ -61,6 +61,57 @@ int I2C_Transmit(I2C_TypeDef* i2c, uint8_t addr, uint8_t* pData, uint8_t size)
   }  
   return 1;
 }
+//---------------------------------------------------------------
+int I2C_Writereg(I2C_TypeDef* i2c, uint8_t addr, uint8_t reg, uint8_t* pData, uint8_t size)
+{
+ while(I2C_IsBusy(i2c));   //Wait until I2C is not busy
+
+  /*Device address*/
+  addr &= 0x7F;                     //Mask address to 7-bit
+  addr <<=1;                        //Shift addr by 1
+  i2c->CR2 &= ~I2C_CR2_SADD_Msk;   //Clear address
+  i2c->CR2 |= addr;               //Write address
+
+  /*Number of bytes to write*/  
+
+  i2c->CR2 &= ~I2C_CR2_NBYTES_Msk;          //Clear NBytes
+  i2c->CR2 |= size << I2C_CR2_NBYTES_Pos;  //Set number of bytes to write
+
+  i2c->CR2 |= /*I2C_CR2_STOP |*/ I2C_CR2_AUTOEND;
+
+  /*Send start condition*/
+  i2c->CR2 |= I2C_CR2_START;  
+
+  /*Write first the Register address*/
+  i2c->TXDR =  reg;
+  while(!(i2c->ISR & I2C_ISR_TXIS))  //Wait for TXDR to be empty
+  {
+    if(i2c->ISR & I2C_ISR_NACKF)
+    {
+      i2c->ICR |= I2C_ICR_NACKCF;
+      return 0;
+    }
+  }
+
+  /*Now Write the data*/
+  for (int i = 0; i < size; i++)
+  {
+    i2c->TXDR = *pData++;
+    while(!(i2c->ISR & I2C_ISR_TXIS))  //Wait for TXDR to be empty
+    {
+      if(i2c->ISR & I2C_ISR_NACKF)
+      {
+        i2c->ICR |= I2C_ICR_NACKCF;
+        return 0;
+      }
+    }
+    /*Insert timeout later writing a 1 to TXE bit to flush*/
+    //i2c->ISR |= I2C_ISR_TXE;
+  }  
+  return 1;
+  }
+
+//---------------------------------------------------------------
 int I2C_IsBusy(I2C_TypeDef* i2c)
 {
   return (i2c->ISR & I2C_ISR_BUSY);

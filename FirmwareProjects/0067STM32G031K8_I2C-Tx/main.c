@@ -26,7 +26,6 @@ Revision History:
 #include "adc.h"
 #include "timer.h"
 #include "i2c.h"
-#include "ssd1306.h"
 
 
 /*********************************************************************
