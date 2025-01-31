@@ -7,6 +7,7 @@
 //
 
 #include "i2c.h"
+#include <stdio.h>
 
 void I2C_Init(I2C_TypeDef* i2c, I2C_Speed speed)
 {//Defaulted to 7-bit address
@@ -23,6 +24,40 @@ void I2C_Init(I2C_TypeDef* i2c, I2C_Speed speed)
 void I2C_Reset(I2C_TypeDef* i2c)
 {
   i2c->CR1 &=  ~I2C_CR1_PE;
+}
+//---------------------------------------------------------------
+void  I2C_ScanFirstAddr(I2C_TypeDef* i2c)
+{
+  uint8_t exit; 
+  for (uint8_t address = 0x0; address < 0xFF; address++) 
+  {
+    exit = 0;
+    uint16_t delay = 10000;
+    while(--delay);
+    //Set address with autoend and Tx 1 dummy byte
+    i2c->CR2 = (address << 1) | I2C_CR2_AUTOEND | (0 << I2C_CR2_NBYTES_Pos);
+    // Generate START condition
+    i2c->CR2 |= I2C_CR2_START;
+    //Dummy Byte
+    //i2c->TXDR = 0x0F;
+    while (!exit) // Wait for address to be sent
+    {
+    // Check for stop condition
+      if(i2c->ISR & I2C_ISR_STOPF)
+      {
+        exit = 1;
+        if (i2c->ISR & I2C_ISR_NACKF)
+        {
+          i2c->ICR |= I2C_ICR_NACKCF;
+        }
+        else
+        {
+          printf("I2C Device found at address: 0x%x\r\n", address);
+        } 
+        i2c->ICR |= I2C_ICR_STOPCF;
+      }
+    }
+  }
 }
 //---------------------------------------------------------------
 int I2C_Transmit(I2C_TypeDef* i2c, uint8_t addr, uint8_t* pData, uint8_t size)
@@ -64,7 +99,8 @@ int I2C_Transmit(I2C_TypeDef* i2c, uint8_t addr, uint8_t* pData, uint8_t size)
 //---------------------------------------------------------------
 int I2C_Writereg(I2C_TypeDef* i2c, uint8_t addr, uint8_t reg, uint8_t* pData, uint8_t size)
 {
- while(I2C_IsBusy(i2c));   //Wait until I2C is not busy
+ while(I2C_IsBusy(i2c))
+ ;   //Wait until I2C is not busy
 
   /*Device address*/
   addr &= 0x7F;                     //Mask address to 7-bit
@@ -109,8 +145,7 @@ int I2C_Writereg(I2C_TypeDef* i2c, uint8_t addr, uint8_t reg, uint8_t* pData, ui
     //i2c->ISR |= I2C_ISR_TXE;
   }  
   return 1;
-  }
-
+}
 //---------------------------------------------------------------
 int I2C_IsBusy(I2C_TypeDef* i2c)
 {

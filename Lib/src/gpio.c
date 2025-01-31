@@ -63,7 +63,7 @@ void GPIO_SetSpeed(GPIO_TypeDef* port, uint16_t pin, IO_Speed speed)
   {
     GPIO_SetPullMode(port, pin, PullMode_PullUp);
     GPIO_SetType(port, pin, Type_OpenDrain);
-    GPIO_SetSpeed(port, pin, Speed_High);
+    GPIO_SetSpeed(port, pin, Speed_VeryHigh);
   }  
 //------------------------------------------------------------------------------
   /*

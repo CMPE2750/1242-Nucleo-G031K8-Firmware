@@ -69,7 +69,7 @@ int main(void)
   GPIO_I2C_Config(GPIOA, 10);
   
   /*Init I2C Module*/
-  I2C_Init(I2C1, I2C_Fast);
+  I2C_Init(I2C1, I2C_Standard);
 
   /*****USART2 INitialization*****/
   GPIO_InitAlternateF(GPIOA, 2, 1);
@@ -85,7 +85,8 @@ int main(void)
     {
       beacon = 0;
       GPIO_Toggle(GPIOC, 6);
-      I2C_Transmit(I2C1, 0x61,data, 2);
+      I2C_ScanFirstAddr(I2C1);
+      //I2C_Transmit(I2C1, 0xE1,data, 2);
     }
   }
 }
