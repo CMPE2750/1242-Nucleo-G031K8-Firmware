@@ -41,12 +41,15 @@ void HAL_Init(void);
 
 volatile uint16_t msCounter = 0;
 volatile uint8_t beacon = 0, dutyUpdate = 0;
+
+volatile uint16_t upEdge = 0, downEdge = 0, period = 0;
 /*********************************************************************
   Main entry
 *********************************************************************/
 int main(void) 
 {
   uint16_t duty = 12;  //Pulse width in [us]
+  uint16_t cmDistance = 0;
   /********************************************************************
     One-time Initializations
   ********************************************************************/  
@@ -69,12 +72,10 @@ int main(void)
 
   /*
     Timer Settings
-    - Triggering pulse on TIM16->CH1 (PA6->AF
+    - Triggering pulse on TIM16->CH1 (PA6->AF5
     - Echo pulse on TIM17->CH1 (PA7->AF
   */
   GPIO_InitAlternateF(GPIOA, 6, 5);
-  GPIO_InitAlternateF(GPIOA, 7, 5);
-
   //Timer setting - Run at 1MHz - Reload at 25000(25[ms])
   Timer_Setup(TIM16, 40, 25000);
   //PWM mode 1 on Timwe16, Channel 1
@@ -83,6 +84,18 @@ int main(void)
   Timer_SetEnable(TIM16, 1); //Start timer
 
 
+    /*
+    Timer Settings
+    - Echo pulse on TIM17->CH1 (PA7->AF5
+  */
+    GPIO_InitAlternateF(GPIOA, 7, 5);
+    //Timer setting - Run at 1MHz - Reload at 0xFFFF)
+    Timer_Setup(TIM17, 40, 0);
+    //Input capture
+    Timer_SetupChannel(TIM17, TimCCR1, InputCapture);
+    TIM17->CCER |= TIM_CCER_CC1P | TIM_CCER_CC1NP;//Capture on both edges (hardcoded)
+    Timer_EnableInterrupt(TIM17, TIM17_IRQn, TimCC1IE);
+    Timer_SetEnable(TIM17, 1); //Start timer
 
   /********************************************************************
     Infinite Loop
@@ -92,8 +105,9 @@ int main(void)
     if(beacon)
     {
       beacon = 0;
+      cmDistance = period / 58;
       UART_TxStr(USART2,"Hello Program...\n\r");
-      printf("Hello Program...\n\r"); //Send same to debug console
+      printf("Distance: %u\n\r", cmDistance); //Send same to debug console
     }
   }
 }
@@ -144,4 +158,17 @@ void SysTick_Handler(void)
 }
  
 /****************Interrupt Service Routines (ISR's)***********************/
-
+void TIM17_IRQHandler(void)
+{
+  if(GPIOA->IDR & GPIO_IDR_ID7)
+  {//Pin is HIGH, rising edge
+    upEdge = TIM17->CCR1; 
+  }
+  else
+  {//PIN is LOW, falling edge
+    downEdge = TIM17->CCR1; 
+    period = downEdge - upEdge;
+  }
+  TIM17->SR &= ~TIM_SR_CC1IF; //Clear flag
+  NVIC_ClearPendingIRQ(TIM17_IRQn);  
+}
