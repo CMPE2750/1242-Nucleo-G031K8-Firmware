@@ -29,7 +29,7 @@ void I2C_Reset(I2C_TypeDef* i2c)
 void  I2C_ScanFirstAddr(I2C_TypeDef* i2c)
 {
   uint8_t exit; 
-  for (uint8_t address = 0x0; address < 0xFF; address++) 
+  for (uint8_t address = 0x0; address < 0x7F; address++) 
   {
     exit = 0;
     uint16_t delay = 10000;
